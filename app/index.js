@@ -5,7 +5,11 @@ import "./index.css";
 
 class App extends React.Component {
   render() {
-    return <Popular />;
+    return (
+      <div className="container">
+        <Popular />
+      </div>
+    );
   }
 }
 
