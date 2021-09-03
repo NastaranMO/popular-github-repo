@@ -5,41 +5,46 @@ import {
   FaBriefcase,
   FaUsers,
   FaUserFriends,
-  FaCode,
   FaUser,
 } from "react-icons/fa";
 import Card from "./Card";
+import PropTypes from "prop-types";
+import Loading from "./Loading";
 
-function ProfileList({ name, location, company, followers, following }) {
+function ProfileList({ profile }) {
   return (
     <ul className="card-list">
       <li>
         <FaUser color="rgb(239, 115, 115)" size={22} />
-        {name}
+        {profile.name}
       </li>
-      {location && (
+      {profile.location && (
         <li>
           <FaCompass color="rgb(144, 115, 255)" size={22} />
-          {location}
+          {profile.location}
         </li>
       )}
-      {company && (
+      {profile.company && (
         <li>
           <FaBriefcase color="#795548" size={22} />
-          {company}
+          {profile.company}
         </li>
       )}
       <li>
         <FaUsers color="rgb(129, 195, 245)" size={22} />
-        {followers} followers
+        {profile.followers.toLocaleString()} followers
       </li>
       <li>
         <FaUserFriends color="rgb(64, 183, 95)" size={22} />
-        {following} following
+        {profile.following.toLocaleString()} following
       </li>
     </ul>
   );
 }
+
+ProfileList.propTypes = {
+  profile: PropTypes.object.isRequired,
+};
 
 export default class Results extends React.Component {
   constructor(props) {
@@ -71,11 +76,11 @@ export default class Results extends React.Component {
         });
       });
   }
+
   render() {
     const { winner, loser, error, loading } = this.state;
-
     if (loading === true) {
-      return <p>LOADING</p>;
+      return <Loading text="Loading" />;
     }
 
     if (error) {
@@ -83,38 +88,37 @@ export default class Results extends React.Component {
     }
 
     return (
-      <div className="grid space-around container-sm">
-        <Card
-          header={winner.score === loser.score ? "Tie" : "Winner"}
-          subheader={`Score: ${winner.score.toLocaleString()}`}
-          avatar={winner.profile.avatar_url}
-          href={winner.profile.html_url}
-          name={winner.profile.login}
-        >
-          <ProfileList
-            name={winner.profile.name}
-            location={winner.profile.location}
-            company={winner.profile.company}
-            followers={winner.profile.followers.toLocaleString()}
-            following={winner.profile.following.toLocaleString()}
-          />
-        </Card>
-        <Card
-          header={winner.score === loser.score ? "Tie" : "Loser"}
-          subheader={`Score: ${loser.score.toLocaleString()}`}
-          avatar={loser.profile.avatar_url}
-          name={loser.profile.login}
-          href={loser.profile.html_url}
-        >
-          <ProfileList
-            name={winner.profile.name}
-            location={winner.profile.location}
-            company={winner.profile.company}
-            followers={winner.profile.followers.toLocaleString()}
-            following={winner.profile.following.toLocaleString()}
-          />
-        </Card>
-      </div>
+      <>
+        <div className="grid space-around container-sm">
+          <Card
+            header={winner.score === loser.score ? "Tie" : "Winner"}
+            subheader={`Score: ${winner.score.toLocaleString()}`}
+            avatar={winner.profile.avatar_url}
+            href={winner.profile.html_url}
+            name={winner.profile.login}
+          >
+            <ProfileList profile={winner.profile} />
+          </Card>
+          <Card
+            header={winner.score === loser.score ? "Tie" : "Loser"}
+            subheader={`Score: ${loser.score.toLocaleString()}`}
+            avatar={loser.profile.avatar_url}
+            name={loser.profile.login}
+            href={loser.profile.html_url}
+          >
+            <ProfileList profile={loser.profile} />
+          </Card>
+        </div>
+        <button className="btn dark-btn btn-space" onClick={this.props.onReset}>
+          Reset
+        </button>
+      </>
     );
   }
 }
+
+Results.propTypes = {
+  playerOne: PropTypes.string.isRequired,
+  playerTwo: PropTypes.string.isRequired,
+  onReset: PropTypes.func.isRequired,
+};
