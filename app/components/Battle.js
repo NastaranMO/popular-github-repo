@@ -6,8 +6,8 @@ import {
   FaTimesCircle,
 } from "react-icons/fa";
 import PropTypes from "prop-types";
-import Results from "./Results";
 import { ThemeConsumer } from "../contexts/theme";
+import { Link } from "react-router-dom";
 
 function Instructions() {
   return (
@@ -167,23 +167,7 @@ export default class Battle extends React.Component {
   }
 
   render() {
-    const { playerOne, playerTwo, battle } = this.state;
-
-    if (battle) {
-      return (
-        <Results
-          playerOne={playerOne}
-          playerTwo={playerTwo}
-          onReset={() =>
-            this.setState({
-              playerOne: null,
-              playerTwo: null,
-              battle: false,
-            })
-          }
-        />
-      );
-    }
+    const { playerOne, playerTwo } = this.state;
 
     return (
       <React.Fragment>
@@ -219,12 +203,15 @@ export default class Battle extends React.Component {
           </div>
 
           {playerOne && playerTwo && (
-            <button
+            <Link
               className="btn dark-btn btn-space"
-              onClick={() => this.setState({ battle: true })}
+              to={{
+                pathname: "/battle/results",
+                search: `?playerOne=${playerOne}&playerTwo=${playerTwo}`,
+              }}
             >
               Battle
-            </button>
+            </Link>
           )}
         </div>
       </React.Fragment>

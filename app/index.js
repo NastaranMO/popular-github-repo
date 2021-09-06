@@ -5,7 +5,9 @@ import Battle from "./components/Battle";
 import "./index.css";
 import { ThemeProvider } from "./contexts/theme";
 import Nav from "./components/Nav";
-import { Route, Link, BrowserRouter as Router } from "react-router-dom";
+import { Route, BrowserRouter as Router } from "react-router-dom";
+import Reaults from "./components/Results";
+import Results from "./components/Results";
 
 class App extends React.Component {
   constructor(props) {
@@ -28,9 +30,10 @@ class App extends React.Component {
           <div className={this.state.theme}>
             <div className="container">
               <Nav />
-
               <Route exact path="/" component={Popular} />
-              <Route path="/battle" component={Battle} />
+              <Route exact path="/battle" component={Battle} />
+              <Route path="/battle/results" component={Results} />
+              <Route render={() => <h1>404</h1>} />
             </div>
           </div>
         </ThemeProvider>
